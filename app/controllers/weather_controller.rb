@@ -8,12 +8,13 @@ class WeatherController < UIViewController
 
   # This mehtod is called when, you guessed it, the view loads
   def viewDidLoad
-    puts ENV['FORCAST_IO_TOKEN']
-
     controller_setup
+
+    add_a_label
+
     add_an_input
     add_the_button
-    add_a_label
+    @input_field.delegate = self
   end
 
   def controller_setup
@@ -22,21 +23,38 @@ class WeatherController < UIViewController
 
     # Setting the controllers background color
     self.view.backgroundColor = BW.rgb_color(50, 50, 50)
+
+    @view_height = self.view.frame.size.height
+    @view_width = self.view.frame.size.width
   end
 
+  # helper for horizontal center
   def center_h(width)
-    (self.view.frame.size.width / 2) - (width / 2)
+    (@view_width / 2) - (width / 2)
+  end
+
+  # Adding a label to our View
+  def add_a_label
+    @label = UILabel.alloc.initWithFrame(CGRectZero)
+    @label.text = @data = "Tell me where you at"
+    @label.color = BW.rgb_color(255, 255, 255)
+    @label.sizeToFit
+    @label.center = CGPointMake(@view_width / 2, 100)
+    self.view.addSubview(@label)
   end
 
   def add_an_input
     # A text input field instantiated with initWithFrame
-   @input_field = UITextField.alloc.initWithFrame([[center_h(200), 10], [200, 50]])
+   @input_field = UITextField.alloc.initWithFrame([[center_h(200), (@label.center.y + 30)], [200, 50]])
 
    # Set the text color using the UIColor class which offers named colors
    @input_field.textColor = UIColor.blackColor
 
    # Set the background color for the text field
    @input_field.backgroundColor = UIColor.whiteColor
+
+   # @input_field.setKeyboardType UIKeyboardTypeNumbersAndPunctuation
+   @input_field.setReturnKeyType UIReturnKeyDone
 
    # Set the border style of the text field to rounded rectangle
    # We need a rounded border, defined by the constant UITextBorderStyleRoundedRect
@@ -46,14 +64,11 @@ class WeatherController < UIViewController
    self.view.addSubview @input_field
   end
 
-  # Adding a label to our View
-  def add_a_label
-    @label = UILabel.alloc.initWithFrame(CGRectZero)
-    @label.text = @data = "Enter a Zip Code"
-    @label.color = BW.rgb_color(255, 255, 255)
-    @label.sizeToFit
-    @label.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2)
-    self.view.addSubview(@label)
+  # Runs when the input field is filled when
+  def textFieldShouldReturn(textField)
+    @input_field.resignFirstResponder
+    request_weather
+    true
   end
 
   # Adding a button to our View
@@ -65,7 +80,7 @@ class WeatherController < UIViewController
     # @theButton.layer.borderColor = BW.rgb_color(255, 255, 255)
     # @theButton.layer.borderWidth = 0.5
     @theButton.layer.cornerRadius = 10
-    @theButton.frame = [[center_h(200),50], [200,50]] #[[x-axis, y-axis], [width, height]]
+    @theButton.frame = [[center_h(200), (@view_height - 200)], [200,50]] #[[x-axis, y-axis], [width, height]]
     # @theButton.setTitle('Stop', forState:UIControlStateSelected)
 
     # Add an event for the button when touched
@@ -79,8 +94,9 @@ class WeatherController < UIViewController
 
   # Our action for our button
   def buttonClicked
+    @input_field.resignFirstResponder
     request_weather
-    # App.alert("#{@input_field.text} was in the box man!", {cancel_button_title: "pshh...", message: "But why did you click that???"})
+    true
   end
 
   # Simple API call to request weather data
@@ -106,20 +122,17 @@ class WeatherController < UIViewController
   # We are using our company geocode lookup, you will need to replace this with your own.
   def get_location_info(zip)
     url_string = "https://offer-demo.adcrws.com/v1/geolocation.json?access_token=#{ENV['ACCESS_DEVELOPMENT_TOKEN']}&search=#{zip}"
-    puts url_string
     url_response = UrlRequest.send_request(url_string)
     json_data = JsonParser.decode(url_response)
-    puts json_data
     @lat = json_data['location'][0]['geometry']['location']['lat']
     @lon = json_data['location'][0]['geometry']['location']['lng']
     @city = json_data['location'][0]['address_components'][1]['short_name']
   end
 
-
   # Simple method to update our label text, resize it, and center it again
   def reload_weather(new_weather)
     @label.text = new_weather
     @label.sizeToFit
-    @label.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2)
+    @label.center = CGPointMake(@view_width / 2, 100)
   end
 end
