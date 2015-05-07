@@ -1,0 +1,4 @@
+API_ENV:
+  development:
+    FORCAST_IO_TOKEN: your_token
+    ACCESS_DEVELOPMENT_TOKEN: your_token
