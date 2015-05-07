@@ -28,7 +28,6 @@ nbproject
 .dat*
 .repl_history
 build/
-app/lib/forcast_key.rb
 
 ## Documentation cache and generated files:
 /.yardoc/

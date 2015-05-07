@@ -21,6 +21,7 @@ class WeatherController < UIViewController
     self.view.backgroundColor = BW.rgb_color(50, 50, 50)
   end
 
+  # Adding a label to our View
   def add_a_label
     @label = UILabel.alloc.initWithFrame(CGRectZero)
     @label.text = @data = "click for the weather"
@@ -30,6 +31,7 @@ class WeatherController < UIViewController
     self.view.addSubview(@label)
   end
 
+  # Adding a button to our View
   def add_the_button
     @theButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
     @theButton.setTitle('Click Me!', forState:UIControlStateNormal)
@@ -53,13 +55,20 @@ class WeatherController < UIViewController
   # Simple API call to request weather data
   def request_weather
     # Our request url, you are going to need a forcase IO api key,
-    url_string = "https://api.forecast.io/forecast/#{ForcastKey.get_key}/40.75475,-111.89678"
+    url_string = "https://api.forecast.io/forecast/2afcbe3cdc7ba1ba6c828e466d3ecb57/40.75475,-111.89678"
+
+    # Send the request and encode it for us `app/lib/url_request.rb`
     url_response = UrlRequest.send_request(url_string)
+
+    # Decode the request and parse it as JSON `app/lib/json_parser.rb`
     json_data = JsonParser.decode(url_response)
+
+    # Now you can use the JSON!
     @data = json_data["currently"]["summary"]
     reload_weather(@data)
   end
 
+  # Simple method to update our label text, resize it, and center it again
   def reload_weather(new_weather)
     @label.text = new_weather
     @label.sizeToFit
