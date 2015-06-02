@@ -9,11 +9,9 @@ class WeatherController < UIViewController
   # This mehtod is called when, you guessed it, the view loads
   def viewDidLoad
     controller_setup
-
     add_a_label
-
+    add_weather_labels
     add_an_input
-    add_the_button
     @input_field.delegate = self
   end
 
@@ -36,11 +34,29 @@ class WeatherController < UIViewController
   # Adding a label to our View
   def add_a_label
     @label = UILabel.alloc.initWithFrame(CGRectZero)
-    @label.text = @data = "Tell me where you at"
+    @label.text = "Find the weather in:"
     @label.color = BW.rgb_color(255, 255, 255)
     @label.sizeToFit
-    @label.center = CGPointMake(@view_width / 2, 100)
+    @label.center = CGPointMake(@view_width / 2, 50)
     self.view.addSubview(@label)
+  end
+
+  # Label to be used for weather
+  def add_weather_labels
+    @city_label = UILabel.alloc.initWithFrame(CGRectZero)
+    @temperature_label = UILabel.alloc.initWithFrame(CGRectZero)
+    @humidity_label = UILabel.alloc.initWithFrame(CGRectZero)
+    @condition_label = UILabel.alloc.initWithFrame(CGRectZero)
+    @city_label.text = @temperature_label.text = @humidity_label.text = @condition_label.text = nil
+    @city_label.color = @temperature_label.color = @humidity_label.color = @condition_label.color = BW.rgb_color(255, 255, 255)
+    [@city_label, @temperature_label, @humidity_label, @condition_label].each do |label|
+      label.sizeToFit
+      label.center = CGPointMake( (@view_width/2), (@view_height/2) )
+    end
+    self.view.addSubview(@city_label)
+    self.view.addSubview(@temperature_label)
+    self.view.addSubview(@humidity_label)
+    self.view.addSubview(@condition_label)
   end
 
   def add_an_input
@@ -74,7 +90,7 @@ class WeatherController < UIViewController
   # Adding a button to our View
   def add_the_button
     @theButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-    @theButton.setTitle('Get Weather!', forState:UIControlStateNormal)
+    @theButton.setTitle('Refresh Weather!', forState:UIControlStateNormal)
     # @theButton.setTitleColor(BW.rgb_color(255, 255, 255), forState:UIControlStateNormal)
     @theButton.backgroundColor = BW.rgb_color(255, 255, 255)
     # @theButton.layer.borderColor = BW.rgb_color(255, 255, 255)
@@ -101,6 +117,9 @@ class WeatherController < UIViewController
 
   # Simple API call to request weather data
   def request_weather
+    unless @theButton
+      add_the_button
+    end
     # Use our Geocoder to get lat lon
     get_location_info(@input_field.text)
 
@@ -114,8 +133,7 @@ class WeatherController < UIViewController
     json_data = JsonParser.decode(url_response)
 
     # Now you can use the JSON!
-    @data = "It is #{json_data["currently"]["summary"]} in #{@city}"
-    reload_weather(@data)
+    load_weather(json_data)
   end
 
   # Uses the same methods as request weather, and sets our variables we need.
@@ -126,13 +144,24 @@ class WeatherController < UIViewController
     json_data = JsonParser.decode(url_response)
     @lat = json_data['location'][0]['geometry']['location']['lat']
     @lon = json_data['location'][0]['geometry']['location']['lng']
-    @city = json_data['location'][0]['address_components'][1]['short_name']
+    @city = json_data['location'][0]['formatted_address'].split(",").first
   end
 
   # Simple method to update our label text, resize it, and center it again
-  def reload_weather(new_weather)
-    @label.text = new_weather
-    @label.sizeToFit
-    @label.center = CGPointMake(@view_width / 2, 100)
+  def load_weather(json_data)
+    @city_label.text = @city
+    font = @city_label.font
+    @city_label.font = font.fontWithSize(30)
+    @city_label.sizeToFit
+    @city_label.center = CGPointMake( (@view_width/2), 200 )
+
+    @condition_label.text = "Currently: #{json_data['currently']['summary']}"
+    @temperature_label.text = "Temperature: #{json_data['currently']['temperature']}"
+    @humidity_label.text =  "Humidity: #{json_data['currently']['humidity']}"
+    [@temperature_label, @humidity_label, @condition_label].each_with_index do |label, index|
+      label.sizeToFit
+      size = ( 250 + (index * 30) )
+      label.center = CGPointMake( (@view_width/2), size )
+    end
   end
 end
