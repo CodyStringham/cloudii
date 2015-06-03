@@ -2,13 +2,14 @@ class AlphabetController < UIViewController
 
   def init
     super
-    self.tabBarItem = UITabBarItem.alloc.initWithTabBarSystemItem(UITabBarSystemItemFeatured, tag: 1)
+    self.tabBarItem = UITabBarItem.alloc.init
+    self.tabBarItem.title = "Alphabet"
+    self.tabBarItem.setFinishedSelectedImage(UIImage.imageNamed("icon-4.png"), withFinishedUnselectedImage:UIImage.imageNamed("icon-4.png"))
     self
   end
 
   def viewDidLoad
     super
-
     self.title = "Alphabet"
 
     @table = UITableView.alloc.initWithFrame(self.view.bounds)

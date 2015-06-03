@@ -9,8 +9,8 @@ class AppDelegate
     tap_controller = TapController.alloc.init
     tap_nav_controller = UINavigationController.alloc.initWithRootViewController(tap_controller)
 
-    tip_controller = TipController.alloc.init
-    tip_nav_controller = UINavigationController.alloc.initWithRootViewController(tip_controller)
+    box_controller = BoxController.alloc.init
+    box_nav_controller = UINavigationController.alloc.initWithRootViewController(box_controller)
 
     weather_controller = WeatherController.alloc.init
     weather_nav_controller = UINavigationController.alloc.initWithRootViewController(weather_controller)
@@ -20,7 +20,7 @@ class AppDelegate
 
     # Sets up the tabs at the bottom of the screen, array is the controllers in order of tab placement
     tab_controller = UITabBarController.alloc.init
-    tab_controller.viewControllers = [weather_nav_controller, tap_nav_controller, tip_nav_controller, alphabet_controller]
+    tab_controller.viewControllers = [weather_nav_controller, tap_nav_controller, box_nav_controller, alphabet_controller]
 
     # Sets the root controller to the tab controller we just defined
     @window.rootViewController = tab_controller

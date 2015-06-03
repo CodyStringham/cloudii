@@ -2,12 +2,32 @@ class WeatherController < UIViewController
 
   # This will set our icon in the "tab navigation"
   def init
-    self.tabBarItem = UITabBarItem.alloc.initWithTabBarSystemItem(UITabBarSystemItemSearch, tag: 1)
+    self.tabBarItem = UITabBarItem.alloc.init
+    self.tabBarItem.title = "Weather"
+    self.tabBarItem.setFinishedSelectedImage(UIImage.imageNamed("icon-1.png"), withFinishedUnselectedImage:UIImage.imageNamed("icon-1.png"))
     self
   end
 
+  # This isn't working yet
+  # # Do not auto rotate
+  # def shouldAutorotate
+  #   false
+  # end
+
+  # # Can only be portrait orientated
+  # def supportedInterfaceOrientations
+  #   UIInterfaceOrientationMaskPortrait
+  #   # Example for landcape only
+  #   # UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight
+  # end
+
+  # def preferredInterfaceOrientationForPresentation
+  #   UIInterfaceOrientationMaskPortrait
+  # end
+
   # This mehtod is called when, you guessed it, the view loads
   def viewDidLoad
+    super
     controller_setup
     add_a_label
     add_weather_labels
@@ -17,7 +37,7 @@ class WeatherController < UIViewController
 
   def controller_setup
     # Setting the controllers title (top of the screen)
-    self.title = "Weather Controller"
+    self.title = "Weather"
 
     # Setting the controllers background color
     self.view.backgroundColor = BW.rgb_color(50, 50, 50)

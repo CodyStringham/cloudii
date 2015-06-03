@@ -2,12 +2,25 @@ class RandomColor
 
   def self.randomize_it
     [
-      BW.rgb_color(255, 75, 35),
-      BW.rgb_color(0, 189, 255),
-      BW.rgb_color(43, 255, 183),
-      BW.rgb_color(185, 97, 255),
-      BW.rgb_color(59, 99, 232),
-      BW.rgb_color(232, 188, 43),
+      "#F44336".to_color,
+      "#E91E63".to_color,
+      "#9C27B0".to_color,
+      "#673AB7".to_color,
+      "#3F51B5".to_color,
+      "#2196F3".to_color,
+      "#03A9F4".to_color,
+      "#00BCD4".to_color,
+      "#009688".to_color,
+      "#4CAF50".to_color,
+      "#8BC34A".to_color,
+      "#CDDC39".to_color,
+      "#FFEB3B".to_color,
+      "#FFC107".to_color,
+      "#FF9800".to_color,
+      "#FF5722".to_color,
+      "#795548".to_color,
+      "#9E9E9E".to_color,
+      "#607D8B".to_color
     ].sample
   end
 

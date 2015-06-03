@@ -32,20 +32,6 @@ class TapController < UIViewController
 
     # Random color!!! /app/lib/random_color.rb
     self.view.backgroundColor = RandomColor.randomize_it
-
-    # Making a UIBarButton button vanilla ( See nextView method below )
-    # right_button = UIBarButtonItem.alloc.initWithTitle("Push", style: UIBarButtonItemStyleBordered, target:self, action:'nextView')
-    # self.navigationItem.rightBarButtonItem = right_button
-  end
-
-  # This is what our button action will use ( action:'nextView' )
-  # def nextView
-  #   new_controller = TapController.alloc.init
-  #   self.navigationController.pushViewController(new_controller, animated: true)
-  # end
-
-  def the_button_was_clicked
-    App.alert("The button was clicked!!!", {cancel_button_title: "pshh...", message: "But why did you click that???"})
   end
 
 end
