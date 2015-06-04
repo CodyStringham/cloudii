@@ -6,8 +6,8 @@ class AppDelegate
     # The first variable is the actual controller being initialized
     # The second variable is setting it to a navigation controller that can be used with our "tab controller"
     # Icons for these tabs are set in the controllers themselves
-    tap_controller = TapController.alloc.init
-    tap_nav_controller = UINavigationController.alloc.initWithRootViewController(tap_controller)
+    color_controller = ColorController.alloc.init
+    color_nav_controller = UINavigationController.alloc.initWithRootViewController(color_controller)
 
     box_controller = BoxController.alloc.init
     box_nav_controller = UINavigationController.alloc.initWithRootViewController(box_controller)
@@ -20,7 +20,7 @@ class AppDelegate
 
     # Sets up the tabs at the bottom of the screen, array is the controllers in order of tab placement
     tab_controller = UITabBarController.alloc.init
-    tab_controller.viewControllers = [weather_nav_controller, tap_nav_controller, box_nav_controller, alphabet_controller]
+    tab_controller.viewControllers = [weather_nav_controller, color_nav_controller, box_nav_controller, alphabet_controller]
 
     # Sets the root controller to the tab controller we just defined
     @window.rootViewController = tab_controller

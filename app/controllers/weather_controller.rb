@@ -5,6 +5,7 @@ class WeatherController < UIViewController
     self.tabBarItem = UITabBarItem.alloc.init
     self.tabBarItem.title = "Weather"
     self.tabBarItem.setFinishedSelectedImage(UIImage.imageNamed("icon-1.png"), withFinishedUnselectedImage:UIImage.imageNamed("icon-1.png"))
+    self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-clear.jpg")))
     self
   end
 
@@ -89,6 +90,9 @@ class WeatherController < UIViewController
    # Set the background color for the text field
    @input_field.backgroundColor = UIColor.whiteColor
 
+   # Set a placeholder
+   @input_field.placeholder = "Search a city or zip..."
+
    # @input_field.setKeyboardType UIKeyboardTypeNumbersAndPunctuation
    @input_field.setReturnKeyType UIReturnKeyDone
 
@@ -103,7 +107,11 @@ class WeatherController < UIViewController
   # Runs when the input field is filled when
   def textFieldShouldReturn(textField)
     @input_field.resignFirstResponder
-    request_weather
+    if @input_field.text == 'Utah'
+      its_gon_rain
+    else
+      request_weather
+    end
     true
   end
 
@@ -131,7 +139,11 @@ class WeatherController < UIViewController
   # Our action for our button
   def buttonClicked
     @input_field.resignFirstResponder
-    request_weather
+    if @input_field.text == 'Utah'
+      its_gon_rain
+    else
+      request_weather
+    end
     true
   end
 
@@ -154,6 +166,14 @@ class WeatherController < UIViewController
 
     # Now you can use the JSON!
     load_weather(json_data)
+  end
+
+  def its_gon_rain
+    self.view.subviews.each do |subview|
+      subview.removeFromSuperview
+    end
+    self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg.jpg")))
+    true
   end
 
   # Uses the same methods as request weather, and sets our variables we need.
@@ -183,5 +203,21 @@ class WeatherController < UIViewController
       size = ( 250 + (index * 30) )
       label.center = CGPointMake( (@view_width/2), size )
     end
+    set_weather_image(json_data['currently']['summary'])
   end
+
+  def set_weather_image(currently)
+    if currently.downcase.match(/clear/)
+      self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-clear.jpg")))
+    elsif currently.downcase.match(/cloud/)
+      self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-cloudy.jpg")))
+    elsif currently.downcase.match(/overcast/)
+      self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-overcast.jpg")))
+    elsif currently.downcase.match(/rain/)
+      self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-rain.jpg")))
+    else
+      self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-clear.jpg")))
+    end
+  end
+
 end
