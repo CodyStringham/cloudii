@@ -5,7 +5,7 @@ class WeatherController < UIViewController
     self.tabBarItem = UITabBarItem.alloc.init
     self.tabBarItem.title = "Weather"
     self.tabBarItem.setFinishedSelectedImage(UIImage.imageNamed("icon-1.png"), withFinishedUnselectedImage:UIImage.imageNamed("icon-1.png"))
-    self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-clear.jpg")))
+    set_background_image('bg-clear')
     self
   end
 
@@ -168,14 +168,6 @@ class WeatherController < UIViewController
     load_weather(json_data)
   end
 
-  def its_gon_rain
-    self.view.subviews.each do |subview|
-      subview.removeFromSuperview
-    end
-    self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg.jpg")))
-    true
-  end
-
   # Uses the same methods as request weather, and sets our variables we need.
   # We are using our company geocode lookup, you will need to replace this with your own.
   def get_location_info(zip)
@@ -203,21 +195,37 @@ class WeatherController < UIViewController
       size = ( 250 + (index * 30) )
       label.center = CGPointMake( (@view_width/2), size )
     end
-    set_weather_image(json_data['currently']['summary'])
+    choose_background(json_data['currently']['summary'])
   end
 
-  def set_weather_image(currently)
+  def choose_background(currently)
     if currently.downcase.match(/clear/)
-      self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-clear.jpg")))
+      set_background_image('bg-clear')
     elsif currently.downcase.match(/cloud/)
-      self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-cloudy.jpg")))
+      set_background_image('bg-cloudy')
     elsif currently.downcase.match(/overcast/)
-      self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-overcast.jpg")))
-    elsif currently.downcase.match(/rain/)
-      self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-rain.jpg")))
+      set_background_image('bg-overcast')
+    elsif currently.downcase.match(/rain/) || currently.downcase.match(/drizzle/) || currently.downcase.match(/sprinkle/)
+      set_background_image('bg-rain')
     else
-      self.view.setBackgroundColor(UIColor.colorWithPatternImage(UIImage.imageNamed("bg-clear.jpg")))
+      set_background_image('bg-clear')
     end
+  end
+
+  def its_gon_rain
+    self.view.subviews.each do |subview|
+      subview.removeFromSuperview
+    end
+    set_background_image('gon-rain')
+  end
+
+  def set_background_image(name)
+    UIGraphicsBeginImageContext(self.view.frame.size)
+    UIImage.imageNamed("#{name}.jpg").drawInRect(self.view.bounds)
+    image = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    self.view.backgroundColor = UIColor.colorWithPatternImage(image)
   end
 
 end
